@@ -1,0 +1,39 @@
+service: aws-python-http-api-project-cm
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - httpApi:
+          path: /
+          method: get
+
+  bye:
+    handler: handler.byebye
+    events:
+      - httpApi:
+          path: /bye
+          method: get
+
+	
+resources: # CloudFormation template syntax
+  Resources:
+    usersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: usersTable
+        AttributeDefinitions:
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: email
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
